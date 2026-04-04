@@ -1,0 +1,41 @@
+# Data files
+data/
+*.csv
+*.xlsx
+*.xls
+
+# Cache and compiled files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+
+# Environment files
+.env
+.venv
+venv/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs and results (keep only important ones)
+*.log
+results/
+
+# Models
+models/
+
+# Keep these commented if you want to exclude them:
+# features/
+# ingestion/
+# scripts/

@@ -1,0 +1,13 @@
+pyspark
+boto3
+pandas
+scikit-learn
+python-dotenv
+mlflow
+yfinance
+textblob
+newsapi
+requests
+numpy
+matplotlib
+seaborn
