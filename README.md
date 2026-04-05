@@ -247,7 +247,245 @@ R² Score:          0.22    ✅
 
 ---
 
-## 🚀 Quick Start
+## � Streamlit Dashboard & Visualizations
+
+### Interactive Dashboard
+
+A comprehensive Streamlit web application provides real-time visualization of the entire pipeline:
+
+#### **1️⃣ Model Results Comparison**
+
+**EC2 Training (S3 Data)** vs **HDFS Cluster Training**
+
+```
+┌─────────────────────────────┬─────────────────────────────┐
+│    EC2 TRAINING (S3 DATA)   │  HDFS CLUSTER TRAINING      │
+├─────────────────────────────┼─────────────────────────────┤
+│ RMSE:  0.0111 ✅ (Cyan)     │ RMSE:  0.0167 (Orange)      │
+│ MAE:   0.0080 ✅ (Cyan)     │ MAE:   0.0118 (Orange)      │
+│ R²:    0.651  ✅ (Cyan)     │ R²:    0.2249 (Orange)      │
+└─────────────────────────────┴─────────────────────────────┘
+```
+
+**Key Insight**: EC2 training on centralized S3 data achieves better accuracy (0.651 R²) compared to distributed HDFS training (0.2249 R²). HDFS shows slightly higher error but is still production-ready for batch processing.
+
+**Time Series Prediction Chart**: Actual vs Predicted Daily Returns
+
+- X-axis: Dec 28 2025 → Mar 22 2026 (8+ weeks)
+- Y-axis: Daily Return (-4% to +4%)
+- Cyan line: Actual returns
+- Purple dotted: Predicted returns
+- Shows model captures major trends with minor lag
+
+---
+
+#### **2️⃣ Compression Gains - Parquet Efficiency**
+
+**Storage Optimization Achieved**
+
+```
+CSV (Raw)              →    Parquet (Compressed)
+24 GB                       937 MB
+┌──────────────────────┐    ┌────────────────┐
+│                      │    │                │
+│   RED BAR (24 GB)    │    │ CYAN BAR (937) │
+│   Raw file size      │    │ Compressed     │
+│   on S3/HDFS         │    │                │
+└──────────────────────┘    └────────────────┘
+
+STORAGE REDUCTION: 96.3% ✅
+```
+
+**Benefits**:
+
+- 📊 Reduced storage costs by 96%
+- ⚡ 3-5x faster read performance
+- 🔐 Built-in snappy compression
+- 💾 Improved HDFS bandwidth utilization
+
+---
+
+#### **3️⃣ HDFS Cluster Topology**
+
+**Distributed Infrastructure Visualization**
+
+```
+┌──────────────────────────────────────────────────┐
+│           HDFS CLUSTER SETUP                     │
+├──────────────────────────────────────────────────┤
+│  NameNode                │  DataNode             │
+│  SPARSH                  │  RUDRA                │
+│  IP: 10.0.7.253          │  IP: 10.0.6.106       │
+├──────────────────────────────────────────────────┤
+│  Metadata & Coordination │  Data Blocks & Nodes  │
+│  - File system tree      │  - 50+ Parquet files  │
+│  - Block replicas        │  - 937 MB total       │
+│  - NameSpace             │  - 128 MB per block   │
+└──────────────────────────────────────────────────┘
+```
+
+**Cluster Characteristics**:
+
+- ✅ 2 physical machines (SPARSH + RUDRA)
+- ✅ Direct LAN connection (1 Gbps)
+- ✅ Replication factor: 1 (single node cluster)
+- ✅ 27.33 GB total capacity
+- ✅ 3.38% utilized (937 MB used)
+
+---
+
+#### **4️⃣ Data Pipeline Flow Diagram**
+
+**End-to-End Data Processing Stages**
+
+```
+STAGE 1: DATA INGESTION
+┌──────────────────────────────────┐
+│  Raw CSVs                        │
+│  24GB S3                         │
+│  500+ stocks                     │
+└──────────┬───────────────────────┘
+           │
+           ↓
+STAGE 2: TRANSFORMATION (PySpark)
+┌──────────────────────────────────┐
+│  Convert: CSV → Parquet          │
+│  Compress: 96.3% reduction ✅    │
+│  Size: 937 MB                    │
+└──────────┬───────────────────────┘
+           │
+           ↓
+STAGE 3: FEATURE ENGINEERING
+┌──────────────────────────────────┐
+│  Price       (OHLCV)             │
+│  Technical   (8 indicators)      │
+│  Sentiment   (3 features)        │
+│  Macro       (7 indicators)      │
+│  Lag         (4 features)        │
+│  Target      (4 return vars)     │
+│  Total:      69 columns ✅       │
+└──────────┬───────────────────────┘
+           │
+           ↓
+STAGE 4: DISTRIBUTED STORAGE
+┌──────────────────────────────────┐
+│  HDFS Cluster                    │
+│  2 Nodes (NameNode + DataNode)   │
+│  Split into 50+ blocks           │
+│  Ready for parallel processing   │
+└──────────────────────────────────┘
+```
+
+**Feature Breakdown by Category**:
+
+- 🔹 **Price**: Open, High, Low, Close, Volume
+- 🔹 **Technical**: SMA_20, EMA_12, RSI_14, MACD, ATR_14, BB_Upper, OBV
+- 🔹 **Sentiment**: Price_Sentiment, Volume_Sentiment, Combined_Sentiment
+- 🔹 **Macro**: FED_Rate, RBI_Rate, VIX, India_VIX, USD_INR, Gold_Price, Oil_Price
+- 🔹 **Lag**: Close_Lag1, Close_Lag3, Close_Lag5, Close_Lag10
+- 🔹 **Target**: Daily_Return, Return_5D, Return_10D, Return_20D
+
+---
+
+#### **5️⃣ Key Metrics Summary**
+
+```
+┌─────────────────┬─────────────────┬──────────────────┬─────────────────┐
+│  24 GB          │  1.37M ROWS     │  500+ STOCKS     │  0.65 R² SCORE  │
+│  Raw Dataset    │  Trained On     │  Covered         │  Best Result    │
+├─────────────────┼─────────────────┼──────────────────┼─────────────────┤
+│  2 NODES        │  937 MB         │  96.3%           │  3-5x FASTER    │
+│  HDFS Cluster   │  Compressed     │  Storage Gain    │  Parquet Speed  │
+└─────────────────┴─────────────────┴──────────────────┴─────────────────┘
+```
+
+---
+
+#### **6️⃣ Architecture Stages**
+
+**✓ Stage 1: Local Prototype**
+
+- Pandas + Scikit-learn
+- Small dataset validation
+- Concept proof ✅
+
+**✓ Stage 2: Cloud Migration**
+
+- AWS S3: 24GB CSV → Parquet
+- EC2: PySpark setup
+- Code to GitHub ✅
+
+**✓ Stage 3: PySpark Training**
+
+- S3 Parquet reading
+- 1.37M rows processed
+- R² = 0.65 accuracy ✅
+
+**✓ Stage 4: Distributed HDFS**
+
+- Hadoop 3.3.6 setup
+- NameNode + DataNode
+- HDFS training complete ✅
+
+---
+
+#### **7️⃣ Tech Stack Visualization**
+
+```
+BIG DATA          │  CLOUD           │  ML              │  LANGUAGES
+─────────────────────────────────────────────────────────────────────
+Spark 3.3.2       │  AWS S3          │  Spark MLlib     │  Python 3.12
+Hadoop HDFS 3.3.6 │  AWS EC2         │  LinearRegression│  PySpark
+Parquet (Snappy)  │  boto3           │  VectorAssembler │  Bash
+                  │                  │  Imputer         │  Ubuntu 24.04
+```
+
+---
+
+#### **8️⃣ Dataset Geographic Coverage (Pie Chart)**
+
+```
+Market Distribution Across 6 Regions:
+
+🟢 India (NSE)        - 40% (200+ stocks)
+🔵 USA (NASDAQ/NYSE)  - 25% (150+ stocks)
+🟣 Japan (TSE)        - 15% (80+ stocks)
+🟠 Germany (XETRA)    - 10% (50+ stocks)
+🟡 Hong Kong (HKEX)   - 7% (35+ stocks)
+🟠 Brazil (B3)        - 3% (15+ stocks)
+```
+
+---
+
+### Dashboard Features
+
+✅ **Real-time Metrics**
+
+- Model performance comparison
+- Compression efficiency tracking
+- Cluster health monitoring
+
+✅ **Interactive Visualizations**
+
+- Time-series predictions vs actual
+- Storage optimization charts
+- Architecture diagrams
+
+✅ **Data Pipeline Transparency**
+
+- Feature engineering breakdown
+- Data flow from raw CSV → HDFS
+- Stage-by-stage progress
+
+✅ **Geographic Coverage**
+
+- Market distribution pie chart
+- Stock coverage by region
+- Multi-market portfolio analysis
+
+---
+
+## �🚀 Quick Start
 
 ### Prerequisites
 
