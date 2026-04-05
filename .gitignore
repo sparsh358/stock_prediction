@@ -28,6 +28,15 @@ ENV/
 .DS_Store
 Thumbs.db
 
+# Image files (prevent accidental uploads)
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.bmp
+*.svg
+WhatsApp*
+
 # Logs and results (keep only important ones)
 *.log
 results/
